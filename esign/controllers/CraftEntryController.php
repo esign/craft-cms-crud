@@ -1,20 +1,20 @@
 <?php
 
-namespace modules\module\controllers;
+namespace modules\esign\controllers;
 
 use Craft;
+use stdClass;
 use craft\web\Controller;
 use craft\elements\Entry as CraftElementEntry;
 use craft\records\EntryType as CraftRecordEntryType;
-use modules\module\support\craft\CraftEntry;
-use modules\module\support\craft\CraftMatrixBlock;
-use modules\module\support\objects\BaseObject;
+use modules\esign\support\CraftEntry;
+use modules\esign\support\CraftMatrixBlock;
 
 class CraftEntryController extends Controller
 {
     public const SYNC_USER_ID = 'sync_user_id';
 
-    public static function setFields(CraftElementEntry $model, BaseObject $fields): CraftElementEntry
+    public static function setFields(CraftElementEntry $model, stdClass $fields): CraftElementEntry
     {
         if(isset($fields->title)) {
             $model->title = $fields->title;
@@ -26,7 +26,7 @@ class CraftEntryController extends Controller
             unset($fields->slug);
         }
 
-        $model->setFieldValues($fields->toArray());
+        $model->setFieldValues(json_decode(json_encode($fields), true));
 
         return $model;
     }
