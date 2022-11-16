@@ -23,7 +23,6 @@
     ],
     "require": {
         "php": "^8.1",
-        "spatie/laravel-data": "^2.0",
         "craftcms/cms": "^4.3"
     }
 }
