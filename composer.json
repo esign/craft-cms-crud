@@ -1,0 +1,29 @@
+{
+    "name": "esign/craft-cms-crud",
+    "description": "This module contains the basic CRUD programmatically functions for Craft CMS",
+    "keywords": [
+        "esign",
+        "craftcms",
+        "crud"
+    ],
+    "homepage": "https://github.com/esign/craft-cms-crud",
+    "license": "MIT",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Esign\\CraftCmsCrud\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dieter Vanhove",
+            "email": "dieter.vanhove@esign.eu",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "spatie/laravel-data": "^2.0",
+        "craftcms/cms": "^4.3"
+    }
+}
