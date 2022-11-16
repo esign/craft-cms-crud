@@ -11,7 +11,7 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Esign\\CraftCmsCrud\\": "src/"
+            "esign\\craftCmsCrud\\": "src/"
         }
     },
     "authors": [

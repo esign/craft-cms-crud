@@ -1,14 +1,14 @@
 <?php
 
-namespace esign\craftcmscrud\controllers;
+namespace esign\craftCmsCrud\controllers;
 
 use Craft;
 use stdClass;
 use craft\web\Controller;
 use craft\elements\Entry as CraftElementEntry;
 use craft\records\EntryType as CraftRecordEntryType;
-use esign\craftcmscrud\support\CraftEntry;
-use esign\craftcmscrud\support\CraftMatrixBlock;
+use esign\craftCmsCrud\support\CraftEntry;
+use esign\craftCmsCrud\support\CraftMatrixBlock;
 
 class CraftEntryController extends Controller
 {
@@ -16,12 +16,12 @@ class CraftEntryController extends Controller
 
     public static function setFields(CraftElementEntry $model, stdClass $fields): CraftElementEntry
     {
-        if(isset($fields->title)) {
+        if (isset($fields->title)) {
             $model->title = $fields->title;
             unset($fields->title);
         }
 
-        if(isset($fields->slug)) {
+        if (isset($fields->slug)) {
             $model->slug = $fields->slug;
             unset($fields->slug);
         }
@@ -57,7 +57,7 @@ class CraftEntryController extends Controller
 
         $entry = self::setFields($entry, $model->fields);
 
-        if(Craft::$app->elements->saveElement($entry)) {
+        if (Craft::$app->elements->saveElement($entry)) {
             return $entry;
         } else {
             throw new \Exception("Couldn't save new entry: " . print_r($entry->getErrors(), true));

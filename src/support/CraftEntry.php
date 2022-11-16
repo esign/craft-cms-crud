@@ -1,6 +1,6 @@
 <?php
 
-namespace esign\craftcmscrud\support;
+namespace esign\craftCmsCrud\support;
 
 use stdClass;
 
@@ -12,5 +12,6 @@ class CraftEntry extends stdClass
         public stdClass|array $fields,
         public ?array $matrixBlocks = null,
         public ?array $nestedEntries = null,
-    ) {}
+    ) {
+    }
 }
