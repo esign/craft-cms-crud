@@ -4,26 +4,35 @@ This module contains the basic CRU(D) functions for Craft CMS
 
 ## Installation
 
-Just copy paste the esign folder in your craft project under ``modules/``
+You can install the package via composer:
+
+```bash
+composer require esign/craft-cms-crud
+```
 
 ## Usage
 
 ### Controller
 
-```
-use modules\esign\controllers\CraftEntryController;
+```php
+use esign\craftCmsCrud\controllers\CraftEntryController;
 
 class YourController extends CraftEntryController
 {
-    ...
+    $this->updateOrCreateEntry($entry);
 }
 ```
 
+Currently there is only one function and that is `updateOrCreateEntry`, this can update an entry with all his fields (fields, matrix blocks & nested entries)
+
+`$entry` has to be an instance of `esign\craftCmsCrud\support\CraftEntry` then we are sure all fields can be mapped right
+
 ## Entry Objects
+---
 
 ###  **CraftEntry.php**
-```
-use modules\esign\support\CraftEntry;
+```php
+use esign\craftCmsCrud\support\CraftEntry;
 
 new CraftEntry(
     $handle, 
@@ -34,21 +43,21 @@ new CraftEntry(
 )
 ```
 
-``$handle`` -> expects your section handle name
+`$handle` -> expects your section handle name
 
-``$identifier`` -> expects your identifier for that entry (used for updating an entry instead of creating one)
+`$identifier` -> expects your identifier for that entry (used for updating an entry instead of creating one)
 
-``$fields`` -> expects a stdClass of your entry fields (including title & slug) ``OR`` an array of stdClasses of your entry fields (this is used for nested entries more on this later)
+`$fields` -> expects a stdClass of your entry fields (including title & slug) `OR` an array of stdClasses of your entry fields (this is used for nested entries more on this later)
 
-``$matrixBlocks`` -> expects an array of CraftMatrixBlock classes (see section CraftMatrixBlock)
+`$matrixBlocks` -> expects an array of CraftMatrixBlock classes (see section CraftMatrixBlock)
 
-``$nestedEntries`` -> expects an array of CraftEntry classes
+`$nestedEntries` -> expects an array of CraftEntry classes
 
----
+
 
 ### **CraftMatrixBlock.php**
-```
-use modules\esign\support\CraftMatrixBlock;
+```php
+use esign\craftCmsCrud\support\CraftMatrixBlock;
 
 new CraftMatrixBlock(
     $handle, 
@@ -57,15 +66,16 @@ new CraftMatrixBlock(
 )
 ```
 
-``$handle`` -> expects your field handle name
+`$handle` -> expects your field handle name
 
-``$handleBlock`` -> expects your matrix block handle name
+`$handleBlock` -> expects your matrix block handle name
 
-``$fields`` -> expects an array of stdClasses of your matrix fields
+`$fields` -> expects an array of stdClasses of your matrix fields
 
----
+
 ## Example
-```
+---
+```php
 $this->updateOrCreateEntry(
     new Entry(
         self::HANDLE_CLUB,
