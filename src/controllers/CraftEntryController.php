@@ -1,14 +1,14 @@
 <?php
 
-namespace modules\esign\controllers;
+namespace esign\craftcmscrud\controllers;
 
 use Craft;
 use stdClass;
 use craft\web\Controller;
 use craft\elements\Entry as CraftElementEntry;
 use craft\records\EntryType as CraftRecordEntryType;
-use modules\esign\support\CraftEntry;
-use modules\esign\support\CraftMatrixBlock;
+use esign\craftcmscrud\support\CraftEntry;
+use esign\craftcmscrud\support\CraftMatrixBlock;
 
 class CraftEntryController extends Controller
 {

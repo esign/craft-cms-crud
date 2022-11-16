@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\esign\support;
+namespace esign\craftcmscrud\support;
 
 use stdClass;
 
