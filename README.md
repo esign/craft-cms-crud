@@ -4,7 +4,7 @@ This module contains the basic CRU(D) functions for Craft CMS
 
 ## Installation
 
-You can install the package via composer:
+[WIP] You can install the package via composer:
 
 ```bash
 composer require esign/craft-cms-crud
