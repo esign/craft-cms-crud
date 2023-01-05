@@ -4,7 +4,7 @@ This module contains the basic CRU(D) functions for Craft CMS
 
 ## Installation
 
-Just copy paste the esign folder in your craft project under ``modules/``
+[WIP] Just copy paste the esign folder in your craft project under ``modules/``
 
 ## Usage
 
