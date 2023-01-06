@@ -30,6 +30,6 @@
         "handle": "craft-cms-crud",
         "developer": "dieter.vanhove@esign.eu",
         "developerUrl": "esign.eu",
-        "class": "\\esign\\craftCmsCrud\\CraftCmsCrud"
+        "class": "\\esign\\craftcmscrud\\CraftCmsCrud"
     }
 }
