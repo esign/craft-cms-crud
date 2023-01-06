@@ -1,6 +1,7 @@
 {
     "name": "esign/craft-cms-crud",
     "description": "This module contains the basic CRUD programmatically functions for Craft CMS",
+    "version": "1.0.5",
     "keywords": [
         "esign",
         "craftcms",
@@ -8,7 +9,7 @@
     ],
     "homepage": "https://github.com/esign/craft-cms-crud",
     "license": "MIT",
-    "type": "library",
+    "type": "craft-plugin",
     "autoload": {
         "psr-4": {
             "esign\\craftcmscrud\\": "src/"
