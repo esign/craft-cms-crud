@@ -15,7 +15,7 @@ composer require esign/craft-cms-crud
 ### Controller
 
 ```php
-use esign\craftCmsCrud\controllers\CraftEntryController;
+use esign\craftcmscrud\controllers\CraftEntryController;
 
 class YourController extends CraftEntryController
 {
@@ -25,14 +25,14 @@ class YourController extends CraftEntryController
 
 Currently there is only one function and that is `updateOrCreateEntry`, this can update an entry with all his fields (fields, matrix blocks & nested entries)
 
-`$entry` has to be an instance of `esign\craftCmsCrud\support\CraftEntry` then we are sure all fields can be mapped right
+`$entry` has to be an instance of `esign\craftcmscrud\support\CraftEntry` then we are sure all fields can be mapped right
 
 ## Entry Objects
 ---
 
 ###  **CraftEntry.php**
 ```php
-use esign\craftCmsCrud\support\CraftEntry;
+use esign\craftcmscrud\support\CraftEntry;
 
 new CraftEntry(
     $handle, 
@@ -57,7 +57,7 @@ new CraftEntry(
 
 ### **CraftMatrixBlock.php**
 ```php
-use esign\craftCmsCrud\support\CraftMatrixBlock;
+use esign\craftcmscrud\support\CraftMatrixBlock;
 
 new CraftMatrixBlock(
     $handle, 
