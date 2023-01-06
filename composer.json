@@ -11,7 +11,7 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Esign\\CraftCmsCrud\\": "src/"
+            "esign\\craftcmscrud\\": "src/"
         }
     },
     "authors": [
@@ -23,7 +23,13 @@
     ],
     "require": {
         "php": "^8.1",
-        "spatie/laravel-data": "^2.0",
         "craftcms/cms": "^4.3"
+    },
+    "extra": {
+        "name": "craft-cms-crud",
+        "handle": "craft-cms-crud",
+        "developer": "dieter.vanhove@esign.eu",
+        "developerUrl": "esign.eu",
+        "class": "\\esign\\craftcmscrud\\CraftCmsCrud"
     }
 }
