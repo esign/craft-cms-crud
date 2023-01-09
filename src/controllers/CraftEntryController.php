@@ -17,7 +17,7 @@ class CraftEntryController extends Controller
         parent::init();
     }
 
-    public static function setFields(CraftElementEntry $model, stdClass $fields): CraftElementEntry
+    protected static function setFields(CraftElementEntry $model, stdClass $fields): CraftElementEntry
     {
         if (isset($fields->title)) {
             $model->title = $fields->title;
@@ -34,7 +34,7 @@ class CraftEntryController extends Controller
         return $model;
     }
 
-    protected static function updateOrCreateEntry(CraftEntry $model): CraftElementEntry
+    public static function updateOrCreateEntry(CraftEntry $model): CraftElementEntry
     {
         $entryType = CraftRecordEntryType::find()->where(['handle' => $model->handle])->one();
         $entry = null;
@@ -107,7 +107,7 @@ class CraftEntryController extends Controller
         return $entry;
     }
 
-    protected function parseNestedMatrixBlocks(array $nestedEntries, array $matrixHandles): array
+    public static function parseNestedMatrixBlocks(array $nestedEntries, array $matrixHandles): array
     {
         // first loop over the nested entries to get the matrix block of that entry
         $blocks = [];
