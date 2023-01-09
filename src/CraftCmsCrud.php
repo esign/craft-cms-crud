@@ -14,7 +14,6 @@ use Craft;
 use craft\base\Plugin;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
-use craft\console\Application as ConsoleApplication;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
 
@@ -96,7 +95,7 @@ class CraftCmsCrud extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['siteActionTrigger1'] = 'craft-cms-crud/default';
+                $event->rules['siteActionTrigger1'] = 'craft-cms-crud/CraftEntryController';
             }
         );
 

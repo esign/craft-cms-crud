@@ -12,7 +12,10 @@ use esign\craftcmscrud\support\CraftMatrixBlock;
 
 class CraftEntryController extends Controller
 {
-    public const SYNC_USER_ID = 'sync_user_id';
+    public function __construct()
+    {
+        parent::init();
+    }
 
     public static function setFields(CraftElementEntry $model, stdClass $fields): CraftElementEntry
     {
@@ -45,7 +48,7 @@ class CraftEntryController extends Controller
         $entry->sectionId = $entryType->getAttribute('sectionId');
         $entry->typeId = $entryType->getAttribute('id');
         $entry->fieldLayoutId = $entryType->getAttribute('fieldLayoutId');
-        $entry->authorId = self::SYNC_USER_ID;
+        $entry->authorId = getenv('ESING_SYNC_USER') ?? 23;
 
         if (isset($model->matrixBlocks)) {
             $entry = self::saveMatrixBlocks($entry, $model->matrixBlocks);
