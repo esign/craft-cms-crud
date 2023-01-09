@@ -1,7 +1,6 @@
 {
     "name": "esign/craft-cms-crud",
     "description": "This module contains the basic CRUD programmatically functions for Craft CMS",
-    "version": "1.0.5",
     "keywords": [
         "esign",
         "craftcms",
