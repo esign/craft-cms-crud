@@ -12,34 +12,15 @@ use esign\craftcmscrud\support\CraftMatrixBlock;
 
 class CraftEntryController extends Controller
 {
-    public function __construct()
-    {
-        parent::init();
-    }
-
-    protected static function setFields(CraftElementEntry $model, stdClass $fields): CraftElementEntry
-    {
-        if (isset($fields->title)) {
-            $model->title = $fields->title;
-            unset($fields->title);
-        }
-
-        if (isset($fields->slug)) {
-            $model->slug = $fields->slug;
-            unset($fields->slug);
-        }
-
-        $model->setFieldValues(json_decode(json_encode($fields), true));
-
-        return $model;
-    }
-
-    public static function updateOrCreateEntry(CraftEntry $model): CraftElementEntry
+    protected static function getEntry(CraftEntry $model): CraftElementEntry
     {
         $entryType = CraftRecordEntryType::find()->where(['handle' => $model->handle])->one();
         $entry = null;
         if (!is_null($model->identifier)) {
-            $entry = CraftElementEntry::find()->section($model->handle)->{$model->identifier}($model->fields->{$model->identifier})->one();
+            $entry = CraftElementEntry::find()
+                ->section($model->handle)
+                ->{$model->identifier}($model->fields->{$model->identifier})
+                ->one();
         }
         if (is_null($entry)) {
             $entry = new CraftElementEntry();
@@ -50,43 +31,27 @@ class CraftEntryController extends Controller
         $entry->fieldLayoutId = $entryType->getAttribute('fieldLayoutId');
         $entry->authorId = getenv('ESING_SYNC_USER') ?? 23;
 
-        if (isset($model->matrixBlocks)) {
-            $entry = self::saveMatrixBlocks($entry, $model->matrixBlocks);
-        }
-
-        if (isset($model->nestedEntries)) {
-            $entry = self::saveNestedEntries($entry, $model->nestedEntries);
-        }
-
-        $entry = self::setFields($entry, $model->fields);
-
-        if (Craft::$app->elements->saveElement($entry)) {
-            return $entry;
-        } else {
-            throw new \Exception("Couldn't save new entry: " . print_r($entry->getErrors(), true));
-        }
-    }
-
-    protected static function saveMatrixBlocks(CraftElementEntry $entry, array $matrixBlocks): CraftElementEntry
-    {
-        $blocks = [];
-        foreach ($matrixBlocks as $block) {
-            $matrixHandle = $block->handle;
-            foreach ($block->fields as $key => $blockFields) {
-                $blocks[] = [
-                    'type' => $block->handleBlock,
-                    'fields' => [
-                        ...$blockFields->toArray()
-                    ],
-                ];
-            }
-            $entry->setFieldValue($matrixHandle, $blocks);
-        }
-
         return $entry;
     }
 
-    protected static function saveNestedEntries(CraftElementEntry $entry, array $nestedEntries): CraftElementEntry
+    protected static function setFields(CraftElementEntry $entry, stdClass $fields): void
+    {
+        // Set Craft CMS title & slug
+        if (isset($fields->title)) {
+            $entry->title = $fields->title;
+            unset($fields->title);
+        }
+
+        if (isset($fields->slug)) {
+            $entry->slug = $fields->slug;
+            unset($fields->slug);
+        }
+
+        // Set all other fields
+        $entry->setFieldValues(json_decode(json_encode($fields), true));
+    }
+
+    protected static function saveNestedEntries(CraftElementEntry $entry, array $nestedEntries): void
     {
         foreach ($nestedEntries as $nestedEntry) {
             $nestedEntryIds = [];
@@ -103,8 +68,6 @@ class CraftEntryController extends Controller
             }
             $entry->setFieldValue($nestedEntry->handle, $nestedEntryIds);
         }
-
-        return $entry;
     }
 
     public static function parseNestedMatrixBlocks(array $nestedEntries, array $matrixHandles): array
@@ -122,5 +85,41 @@ class CraftEntryController extends Controller
         }
 
         return $blocks;
+    }
+
+    protected static function saveMatrixBlocks(CraftElementEntry $entry, array $matrixBlocks): void
+    {
+        foreach ($matrixBlocks as $block) {
+            $blocks = [];
+            foreach ($block->fields as $blockFields) {
+                $blocks[] = [
+                    'type' => $block->handleBlock,
+                    // TODO expects to have this toArray() function
+                    'fields' => $blockFields->toArray(),
+                ];
+            }
+            $entry->setFieldValue($block->handle, $blocks);
+        }
+    }
+
+    public static function updateOrCreateEntry(CraftEntry $model): CraftElementEntry
+    {
+        $entry = self::getEntry($model);
+
+        if (isset($model->matrixBlocks)) {
+            self::saveMatrixBlocks($entry, $model->matrixBlocks);
+        }
+
+        if (isset($model->nestedEntries)) {
+            self::saveNestedEntries($entry, $model->nestedEntries);
+        }
+
+        self::setFields($entry, $model->fields);
+
+        if (Craft::$app->elements->saveElement($entry)) {
+            return $entry;
+        } else {
+            throw new \Exception("Couldn't save new entry: " . print_r($entry->getErrors(), true));
+        }
     }
 }
