@@ -1,13 +1,13 @@
 # Craft Programmatically CRUD
 
-This module contains the basic CRU(D) functions for Craft CMS
+This module contains the basic CRUD functions for Craft CMS
 
 ## Installation
 
-[WIP] You can install the package via composer:
+You can install the package via composer, and Craft to install it:
 
 ```bash
-composer require esign/craft-cms-crud
+composer require esign/craft-cms-crud && php craft plugin/install craft-cms-crud 
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ use esign\craftcmscrud\controllers\CraftEntryController;
 
 class YourController extends CraftEntryController
 {
-    $this->updateOrCreateEntry($entry);
+    CraftEntryController::updateOrCreateEntry($entry);
 }
 ```
 
@@ -76,13 +76,17 @@ new CraftMatrixBlock(
 ## Example
 ---
 ```php
-$this->updateOrCreateEntry(
+use esign\craftcmscrud\controllers\CraftEntryController;
+use esign\craftcmscrud\support\CraftEntry;
+use esign\craftcmscrud\support\CraftMatrixBlock;
+
+CraftEntryController::updateOrCreateEntry(
     new Entry(
         self::HANDLE_CLUB,
         self::IDENTIFIER_CLUB,
         ClubModel::fieldsFromClub($club),
         [
-            new MatrixBlock(
+            new CraftMatrixBlock(
                 self::HANDLE_OPENING_HOURS,
                 self::HANDLE_OPENING_HOURS_BLOCK,
                 $club->{self::HANDLE_OPENING_HOURS}
@@ -90,7 +94,7 @@ $this->updateOrCreateEntry(
             ...
         ],
         [
-            new Entry(
+            new CraftEntry(
                 self::HANDLE_CLUB_TAGS,
                 self::IDENTIFIER_CLUB_TAGS,
                 ClubModel::collectionFieldsFromClubTags($club->{self::HANDLE_CLUB_TAGS})
