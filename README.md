@@ -12,7 +12,11 @@ composer require esign/craft-cms-crud && php craft plugin/install craft-cms-crud
 
 ## Usage
 
-### Controller
+### updateOrCreateEntry
+
+Currently there is only one function and that is `updateOrCreateEntry`, this can update an entry with all his fields (fields, matrix blocks & nested entries)
+
+`$entry` has to be an instance of `esign\craftcmscrud\support\CraftEntry` then we are sure all fields can be mapped right
 
 ```php
 use esign\craftcmscrud\controllers\CraftEntryController;
@@ -22,10 +26,6 @@ class YourController extends CraftEntryController
     CraftEntryController::updateOrCreateEntry($entry);
 }
 ```
-
-Currently there is only one function and that is `updateOrCreateEntry`, this can update an entry with all his fields (fields, matrix blocks & nested entries)
-
-`$entry` has to be an instance of `esign\craftcmscrud\support\CraftEntry` then we are sure all fields can be mapped right
 
 ## Entry Objects
 ---
@@ -81,7 +81,7 @@ use esign\craftcmscrud\support\CraftEntry;
 use esign\craftcmscrud\support\CraftMatrixBlock;
 
 CraftEntryController::updateOrCreateEntry(
-    new Entry(
+    new CraftEntry(
         self::HANDLE_CLUB,
         self::IDENTIFIER_CLUB,
         ClubModel::fieldsFromClub($club),
@@ -104,3 +104,44 @@ CraftEntryController::updateOrCreateEntry(
     ),
 );
 ```
+
+## parseNestedMatrixBlocks
+---
+```php
+use esign\craftcmscrud\controllers\CraftEntryController;
+use esign\craftcmscrud\support\CraftEntry;
+use esign\craftcmscrud\support\CraftMatrixBlock;
+
+public const MATRIX_BLOCKS_CONTRACT_TERM = [
+    'mlTermPriceAdjustmentRules' => 'mlPriceBlock',
+    'mlTermFlatFees' => 'mlFeeBlock',
+    'mlTermOptionalModules' => 'mlOptionalBlock',
+    'mlTermRateBonusPeriods' => 'mlBonusBlock',
+];
+
+CraftEntryController::updateOrCreateEntry(
+    new CraftEntry(
+        self::HANDLE_CONTRACT,
+        self::IDENTIFIER_CONTRACT,
+        Entry::fieldsFromContract($contract),
+        null,
+        [
+            new CraftEntry(
+                self::HANDLE_CONTRACT_TERM,
+                self::IDENTIFIER_CONTRACT_TERM,
+                Entry::collectionFieldsFromContractTerms(
+                    $contract->{self::HANDLE_CONTRACT_TERM}
+                ),
+                CraftEntryController::parseNestedMatrixBlocks(
+                    $contract->{self::HANDLE_CONTRACT_TERM},
+                    self::MATRIX_BLOCKS_CONTRACT_TERM
+                ),
+            ),
+        ],
+    ),
+);
+```
+
+`CraftEntryController::parseNestedMatrixBlocks()` is used to parse the nested matrix blocks. 
+
+`MATRIX_BLOCKS_CONTRACT_TERM` is the $sectionHandle => $blockHandle
