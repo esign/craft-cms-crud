@@ -72,6 +72,27 @@ new CraftMatrixBlock(
 
 `$fields` -> expects an array of stdClasses of your matrix fields
 
+### **CraftAsset.php**
+```php
+use esign\craftcmscrud\support\CraftAsset;
+
+new CraftAsset(
+    $handle,
+    $imageUrl,
+    $filename,
+    $path,
+)
+```
+
+`$handle` -> expects your field handle name
+
+`$imageUrl` -> expects your external image url
+
+`$filename` -> expects filename
+
+`$path` -> expects the path of your asset field
+
+
 
 ## Example
 ---
@@ -100,7 +121,15 @@ CraftEntryController::updateOrCreateEntry(
                 ClubModel::collectionFieldsFromClubTags($club->{self::HANDLE_CLUB_TAGS})
             ),
             ...
-        ]
+        ],
+        [
+            new CraftAsset(
+                self::HANDLE_IMAGE,
+                $contract->mlContractImageUrl,
+                StringHelper::beforeFirst(StringHelper::afterLast($contract->mlContractImageUrl, '/'), '?'),
+                self::HANDLE_IMAGE_PATH
+            )
+        ],
     ),
 );
 ```
