@@ -4,12 +4,13 @@ namespace esign\craftcmscrud\support;
 
 use stdClass;
 
-class CraftMatrixBlock extends stdClass
+class CraftAsset extends stdClass
 {
     public function __construct(
         public string $handle,
-        public string $handleBlock,
-        public array $fields
+        public string $imageUrl,
+        public string $filename,
+        public string $path,
     ) {
     }
 }

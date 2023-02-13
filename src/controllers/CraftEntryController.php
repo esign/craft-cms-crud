@@ -3,10 +3,13 @@
 namespace esign\craftcmscrud\controllers;
 
 use Craft;
+use craft\elements\Asset;
 use stdClass;
 use craft\web\Controller;
 use craft\elements\Entry as CraftElementEntry;
+use craft\helpers\StringHelper;
 use craft\records\EntryType as CraftRecordEntryType;
+use craft\records\VolumeFolder;
 use esign\craftcmscrud\support\CraftEntry;
 use esign\craftcmscrud\support\CraftMatrixBlock;
 
@@ -102,6 +105,32 @@ class CraftEntryController extends Controller
         }
     }
 
+    public static function saveAssets(CraftElementEntry $entry, array $assets): void
+    {
+        foreach ($assets as $assetField) {
+            $filename = $assetField->filename;
+            $tempPath = Craft::$app->getPath()->getTempPath();
+            $tempFile = $tempPath . '/' . $filename;
+            $imageData = file_get_contents($assetField->imageUrl);
+            file_put_contents($tempFile, $imageData);
+
+            $folder = VolumeFolder::find()->where(['path' => StringHelper::ensureRight($assetField->path, '/')])->one();
+            $asset = Asset::find()->folderId($folder->id)->volumeId($folder->volumeId)->filename($filename)->one() ?? new Asset();
+            $asset->tempFilePath = $tempFile;
+            $asset->filename = $filename;
+            $asset->title = $filename;
+            $asset->newFolderId = $folder->id;
+            $asset->volumeId = $folder->volumeId;
+            $asset->uploaderId = getenv('ESING_SYNC_USER') ?? 23;
+
+            if (Craft::$app->elements->saveElement($asset)) {
+                $entry->setFieldValue($assetField->handle, [$asset->id]);
+            } else {
+                throw new \Exception("Couldn't save asset: " . print_r($asset->getErrors(), true));
+            }
+        }
+    }
+
     public static function updateOrCreateEntry(CraftEntry $model): CraftElementEntry
     {
         $entry = self::getEntry($model);
@@ -112,6 +141,10 @@ class CraftEntryController extends Controller
 
         if (isset($model->nestedEntries)) {
             self::saveNestedEntries($entry, $model->nestedEntries);
+        }
+
+        if (isset($model->assets)) {
+            self::saveAssets($entry, $model->assets);
         }
 
         self::setFields($entry, $model->fields);

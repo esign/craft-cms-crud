@@ -7,11 +7,12 @@ use stdClass;
 class CraftEntry extends stdClass
 {
     public function __construct(
-        string $handle,
-        ?string $identifier = null,
-        stdClass|array $fields,
-        ?array $matrixBlocks = null,
-        ?array $nestedEntries = null,
+        public string $handle,
+        public ?string $identifier = null,
+        public stdClass|array $fields,
+        public ?array $matrixBlocks = null,
+        public ?array $nestedEntries = null,
+        public ?array $assets = null,
     ) {
     }
 }
