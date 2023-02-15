@@ -21,6 +21,7 @@ class CraftEntryController extends Controller
         $entry = null;
         if (!is_null($model->identifier)) {
             $entry = CraftElementEntry::find()
+                ->status(CraftElementEntry::statuses())
                 ->section($model->handle)
                 ->{$model->identifier}($model->fields->{$model->identifier})
                 ->one();
@@ -33,6 +34,7 @@ class CraftEntryController extends Controller
         $entry->typeId = $entryType->getAttribute('id');
         $entry->fieldLayoutId = $entryType->getAttribute('fieldLayoutId');
         $entry->authorId = getenv('ESING_SYNC_USER') ?? 23;
+        $entry->enabled = true;
 
         return $entry;
     }
@@ -153,6 +155,28 @@ class CraftEntryController extends Controller
             return $entry;
         } else {
             throw new \Exception("Couldn't save new entry: " . print_r($entry->getErrors(), true));
+        }
+    }
+
+    public static function disableEntry(CraftElementEntry $entry): CraftElementEntry
+    {
+        $entry->enabled = false;
+        if (Craft::$app->elements->saveElement($entry)) {
+            return $entry;
+        } else {
+            throw new \Exception("Couldn't save new entry: " . print_r($entry->getErrors(), true));
+        }
+    }
+
+    public static function disableEntriesExcept(string $sectionHandle, string $databaseColumnName, array $idsToExclude): void
+    {
+        $entries = CraftElementEntry::find()
+            ->section($sectionHandle)
+            ->where(['NOT',["content.$databaseColumnName" => $idsToExclude]])
+            ->all();
+
+        foreach ($entries as $entry) {
+            self::disableEntry($entry);
         }
     }
 }
