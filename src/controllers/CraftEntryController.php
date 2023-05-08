@@ -118,6 +118,7 @@ class CraftEntryController extends Controller
 
             $folder = VolumeFolder::find()->where(['path' => StringHelper::ensureRight($assetField->path, '/')])->one();
             $asset = Asset::find()->folderId($folder->id)->volumeId($folder->volumeId)->filename($filename)->one() ?? new Asset();
+            $asset->avoidFilenameConflicts = true;
             $asset->tempFilePath = $tempFile;
             $asset->filename = $filename;
             $asset->title = $filename;
