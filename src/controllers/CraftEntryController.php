@@ -28,13 +28,13 @@ class CraftEntryController extends Controller
         }
         if (is_null($entry)) {
             $entry = new CraftElementEntry();
+            $entry->enabled = $model->enabledOnCreate;
         }
 
         $entry->sectionId = $entryType->getAttribute('sectionId');
         $entry->typeId = $entryType->getAttribute('id');
         $entry->fieldLayoutId = $entryType->getAttribute('fieldLayoutId');
         $entry->authorId = getenv('ESING_SYNC_USER') ?? 23;
-        $entry->enabled = true;
 
         return $entry;
     }
@@ -67,7 +67,9 @@ class CraftEntryController extends Controller
                         $nestedEntry->identifier,
                         $nestedEntryFieldValues,
                         $nestedEntry->matrixBlocks,
-                        $nestedEntry->nestedEntries
+                        $nestedEntry->nestedEntries,
+                        $nestedEntry->assets,
+                        $nestedEntry->enabledOnCreate
                     ),
                 )?->id;
             }
