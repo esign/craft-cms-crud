@@ -28,7 +28,6 @@ class CraftEntryController extends Controller
         }
         if (is_null($entry)) {
             $entry = new CraftElementEntry();
-            $entry->enabled = $model->enabledOnCreate;
         }
 
         $entry->sectionId = $entryType->getAttribute('sectionId');
@@ -52,6 +51,11 @@ class CraftEntryController extends Controller
             unset($fields->slug);
         }
 
+        if (is_null($entry->id) && !is_null($fields->enabledOnCreate)) {
+            $entry->enabled = $fields->enabledOnCreate;
+        }
+        unset($fields->enabledOnCreate);
+
         // Set all other fields
         $entry->setFieldValues(json_decode(json_encode($fields), true));
     }
@@ -69,7 +73,6 @@ class CraftEntryController extends Controller
                         $nestedEntry->matrixBlocks,
                         $nestedEntry->nestedEntries,
                         $nestedEntry->assets,
-                        $nestedEntry->enabledOnCreate
                     ),
                 )?->id;
             }

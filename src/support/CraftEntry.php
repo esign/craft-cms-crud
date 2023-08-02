@@ -13,7 +13,6 @@ class CraftEntry extends stdClass
         public ?array $matrixBlocks = null,
         public ?array $nestedEntries = null,
         public ?array $assets = null,
-        public ?bool $enabledOnCreate = true,
     ) {
     }
 }
