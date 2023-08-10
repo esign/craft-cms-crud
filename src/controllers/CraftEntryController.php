@@ -38,26 +38,22 @@ class CraftEntryController extends Controller
         return $entry;
     }
 
-    protected static function setFields(CraftElementEntry $entry, stdClass $fields): void
+    protected static function applySettings(CraftElementEntry $entry, stdClass $settings): void
     {
         // Set Craft CMS title & slug
-        if (isset($fields->title)) {
-            $entry->title = $fields->title;
-            unset($fields->title);
+        if (is_null($entry->id) || $settings->updateTitleAndSlug) {
+            if (isset($settings->title)) {
+                $entry->title = $settings->title;
+            }
+
+            if (isset($settings->slug)) {
+                $entry->slug = $settings->slug;
+            }
         }
 
-        if (isset($fields->slug)) {
-            $entry->slug = $fields->slug;
-            unset($fields->slug);
+        if (is_null($entry->id) && !is_null($settings->enabledOnCreate)) {
+            $entry->enabled = $settings->enabledOnCreate;
         }
-
-        if (is_null($entry->id) && !is_null($fields->enabledOnCreate)) {
-            $entry->enabled = $fields->enabledOnCreate;
-        }
-        unset($fields->enabledOnCreate);
-
-        // Set all other fields
-        $entry->setFieldValues(json_decode(json_encode($fields), true));
     }
 
     protected static function saveNestedEntries(CraftElementEntry $entry, array $nestedEntries): void
@@ -155,7 +151,10 @@ class CraftEntryController extends Controller
             self::saveAssets($entry, $model->assets);
         }
 
-        self::setFields($entry, $model->fields);
+        self::applySettings($entry, $model->fields->settings);
+        unset($model->fields->settings);
+
+        $entry->setFieldValues(json_decode(json_encode($model->fields), true));
 
         if (Craft::$app->elements->saveElement($entry)) {
             return $entry;
