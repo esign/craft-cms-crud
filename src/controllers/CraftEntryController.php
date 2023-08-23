@@ -38,8 +38,12 @@ class CraftEntryController extends Controller
         return $entry;
     }
 
-    protected static function applySettings(CraftElementEntry $entry, stdClass $settings): void
+    protected static function applySettings(CraftElementEntry $entry, ?stdClass $settings): void
     {
+        if (is_null($settings)) {
+            return;
+        }
+
         // Set Craft CMS title & slug
         if (is_null($entry->id) || $settings->updateTitleAndSlug) {
             if (isset($settings->title)) {
@@ -151,7 +155,7 @@ class CraftEntryController extends Controller
             self::saveAssets($entry, $model->assets);
         }
 
-        self::applySettings($entry, $model->fields->settings);
+        self::applySettings($entry, $model->fields->settings ?? null);
         unset($model->fields->settings);
 
         $entry->setFieldValues(json_decode(json_encode($model->fields), true));
