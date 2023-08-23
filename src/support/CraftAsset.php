@@ -2,9 +2,7 @@
 
 namespace esign\craftcmscrud\support;
 
-use stdClass;
-
-class CraftAsset extends stdClass
+class CraftAsset
 {
     public function __construct(
         public string $handle,
