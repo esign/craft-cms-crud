@@ -20,12 +20,18 @@ class CraftEntryController extends Controller
         $entryType = CraftRecordEntryType::find()->where(['handle' => $model->handle])->one();
         $entry = null;
         if (!is_null($model->identifier)) {
-            $entry = CraftElementEntry::find()
+            $query = CraftElementEntry::find()
                 ->status(CraftElementEntry::statuses())
                 ->section($model->handle)
-                ->{$model->identifier}($model->fields->{$model->identifier})
-                ->one();
+                ->{$model->identifier}($model->fields->{$model->identifier});
+
+            if (isset($model->fields->settings->siteId)) {
+                $query = $query->siteId($model->fields->settings->siteId);
+            }
+
+            $entry = $query->one();
         }
+
         if (is_null($entry)) {
             $entry = new CraftElementEntry();
         }
@@ -57,7 +63,51 @@ class CraftEntryController extends Controller
 
         if (is_null($entry->id) && !is_null($settings->enabledOnCreate)) {
             $entry->enabled = $settings->enabledOnCreate;
+
+            // is multisite only enable for selected site
+            if (isset($settings->siteId)) {
+                $enabledForSite = [];
+                foreach (Craft::$app->getSites()->getAllSiteIds() as $siteId) {
+                    $enabledForSite[$siteId] = ($siteId === $settings->siteId);
+                }
+                $entry->setEnabledForSite($enabledForSite);
+            }
         }
+
+        // for multilang sites other languages are updates instead of creates so we have to check like this
+        if (isset($settings->siteId) && !is_null($entry->id)) {
+            $enabledForSite = [];
+            foreach (Craft::$app->getSites()->getAllSiteIds() as $siteId) {
+                if ($siteId === $settings->siteId) {
+                    $enabledForSite[$settings->siteId] = false;
+                    continue;
+                }
+
+                // TODO currently not found a solution to this problem
+                // I need to check the status of the other languages
+                // so I know how to set the current one
+                $enabledForSite[$siteId] = self::getEntryForSite($entry->id, $siteId)->getEnabledForSite();
+            }
+
+            if (in_array(true, $enabledForSite)) {
+                $enabledForSite[$settings->siteId] = true;
+            }
+
+            $entry->setEnabledForSite($enabledForSite);
+        }
+
+        if (isset($settings->postDate)) {
+            $entry->postDate = $settings->postDate;
+        }
+    }
+
+    public static function getEntryForSite(int $entryId, int $siteId): CraftElementEntry
+    {
+        return CraftElementEntry::find()
+            ->status(CraftElementEntry::statuses())
+            ->id($entryId)
+            ->siteId($siteId)
+            ->one();
     }
 
     protected static function saveNestedEntries(CraftElementEntry $entry, array $nestedEntries): void
