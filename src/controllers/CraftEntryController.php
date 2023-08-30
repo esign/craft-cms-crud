@@ -79,7 +79,7 @@ class CraftEntryController extends Controller
             $enabledForSite = [];
             foreach (Craft::$app->getSites()->getAllSiteIds() as $siteId) {
                 if ($siteId === $settings->siteId) {
-                    $enabledForSite[$settings->siteId] = false;
+                    $enabledForSite[$siteId] = $entry->getEnabledForSite();
                     continue;
                 }
 
