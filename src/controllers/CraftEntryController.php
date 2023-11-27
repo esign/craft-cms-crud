@@ -101,7 +101,7 @@ class CraftEntryController extends Controller
         }
     }
 
-    public static function getEntryForSite(int $entryId, int $siteId): CraftElementEntry
+    public static function getEntryForSite(int $entryId, int $siteId): ?CraftElementEntry
     {
         return CraftElementEntry::find()
             ->status(CraftElementEntry::statuses())
