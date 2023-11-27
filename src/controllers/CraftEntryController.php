@@ -114,13 +114,15 @@ class CraftEntryController extends Controller
     {
         foreach ($nestedEntries as $nestedEntry) {
             $nestedEntryIds = [];
-            foreach ($nestedEntry->fields as $nestedEntryFieldValues) {
+            foreach ($nestedEntry->fields as $key => $nestedEntryFieldValues) {
+                $matrixBlocks = is_array($nestedEntry->matrixBlocks) ? $nestedEntry->matrixBlocks[$key] : null;
+
                 $nestedEntryIds[] = self::updateOrCreateEntry(
                     new CraftEntry(
                         $nestedEntry->handle,
                         $nestedEntry->identifier,
                         $nestedEntryFieldValues,
-                        $nestedEntry->matrixBlocks,
+                        $matrixBlocks,
                         $nestedEntry->nestedEntries,
                         $nestedEntry->assets,
                     ),
@@ -135,13 +137,17 @@ class CraftEntryController extends Controller
         // first loop over the nested entries to get the matrix block of that entry
         $blocks = [];
         foreach ($nestedEntries as $key => $value) {
+            $entryBlocks = [];
+
             foreach ($matrixHandles as $sectionHandle => $blockHandle) {
-                $blocks[] = new CraftMatrixBlock(
+                $entryBlocks[] = new CraftMatrixBlock(
                     $sectionHandle,
                     $blockHandle,
                     $nestedEntries[$key]->{$sectionHandle}
                 );
             }
+
+            $blocks[] = $entryBlocks;
         }
 
         return $blocks;
