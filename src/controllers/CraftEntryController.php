@@ -86,7 +86,7 @@ class CraftEntryController extends Controller
                 // TODO currently not found a solution to this problem
                 // I need to check the status of the other languages
                 // so I know how to set the current one
-                $enabledForSite[$siteId] = self::getEntryForSite($entry->id, $siteId)->getEnabledForSite();
+                $enabledForSite[$siteId] = self::getEntryForSite($entry->id, $siteId)?->getEnabledForSite();
             }
 
             if (in_array(true, $enabledForSite)) {
