@@ -9,6 +9,7 @@ use craft\web\Controller;
 use craft\elements\Entry as CraftElementEntry;
 use craft\helpers\StringHelper;
 use craft\records\EntryType as CraftRecordEntryType;
+use craft\records\Section;
 use craft\records\VolumeFolder;
 use esign\craftcmscrud\support\CraftEntry;
 use esign\craftcmscrud\support\CraftMatrixBlock;
@@ -21,14 +22,14 @@ class CraftEntryController extends Controller
         $entry = null;
         if (!is_null($model->identifier)) {
             $query = CraftElementEntry::find()
-                ->status(CraftElementEntry::statuses())
-                ->section($model->handle)
-                ->{$model->identifier}($model->fields->{$model->identifier});
-
+            ->status(CraftElementEntry::statuses())
+            ->section($model->handle)
+            ->{$model->identifier}($model->fields->{$model->identifier});
+            
             if (isset($model->fields->settings->siteId)) {
                 $query = $query->siteId($model->fields->settings->siteId);
             }
-
+            
             $entry = $query->one();
         }
 
@@ -36,9 +37,17 @@ class CraftEntryController extends Controller
             $entry = new CraftElementEntry();
         }
 
-        $entry->sectionId = $entryType->getAttribute('sectionId');
-        $entry->typeId = $entryType->getAttribute('id');
-        $entry->fieldLayoutId = $entryType->getAttribute('fieldLayoutId');
+        if (is_null($entry->sectionId)) {
+            $entry->sectionId = Section::find()->where(['handle' => $model->handle])->one()->getAttribute('id');
+        }
+
+        if (is_null($entry->typeId)) {
+            $entry->typeId = $entryType->getAttribute('id');
+        }
+
+        if (is_null($entry->fieldLayoutId)) {
+            $entry->fieldLayoutId = $entryType->getAttribute('fieldLayoutId');
+        }
         $entry->authorId = getenv('ESING_SYNC_USER') ?? 23;
 
         return $entry;
