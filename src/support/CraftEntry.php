@@ -12,5 +12,7 @@ class CraftEntry extends stdClass
         public stdClass|array $fields,
         public ?array $matrixBlocks = null,
         public ?array $nestedEntries = null,
-    ) {}
+        public ?array $assets = null,
+    ) {
+    }
 }

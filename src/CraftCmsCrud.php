@@ -51,26 +51,11 @@ class CraftCmsCrud extends Plugin
     // Public Properties
     // =========================================================================
 
-    /**
-     * To execute your plugin’s migrations, you’ll need to increase its schema version.
-     *
-     * @var string
-     */
-    public $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.0.0';
 
-    /**
-     * Set to `true` if the plugin should have a settings view in the control panel.
-     *
-     * @var bool
-     */
-    public $hasCpSettings = false;
+    public bool $hasCpSettings = false;
 
-    /**
-     * Set to `true` if the plugin should have its own section (main nav item) in the control panel.
-     *
-     * @var bool
-     */
-    public $hasCpSection = false;
+    public bool $hasCpSection = false;
 
     // Public Methods
     // =========================================================================
@@ -96,7 +81,7 @@ class CraftCmsCrud extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['siteActionTrigger1'] = 'craft-cms-crud/default';
+                $event->rules['siteActionTrigger1'] = 'craft-cms-crud/CraftEntryController';
             }
         );
 
